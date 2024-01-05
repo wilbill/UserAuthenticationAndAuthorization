@@ -18,7 +18,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter; //this is mine
-    private AuthenticationProvider authenticationProvider; //This is builtin
+    private final AuthenticationProvider authenticationProvider; //This is builtin
+
 
     //Bean responsible for configuring all http security
     @Bean //exception is coz build might throw an exception
@@ -30,7 +31,7 @@ public class SecurityConfiguration {
                         authConfig -> {
                             authConfig
                             .requestMatchers("/actuator/**").hasAuthority("ADMIN")
-                            .requestMatchers("/auth/**", "/static/**", "/auth/login").permitAll()
+                                    .requestMatchers("/api/v1/auth/**", "/static/**", "/auth/login").permitAll() //Me-added api/v1/auth
                             .anyRequest().authenticated();
                         })
                 .authenticationProvider(authenticationProvider)
