@@ -1,6 +1,6 @@
-package com.security.userauthenticationandauthorization.service.impl;
+package com.security.userauthenticationandauthorization.config.service.impl;
 
-import com.security.userauthenticationandauthorization.service.JwtService;
+import com.security.userauthenticationandauthorization.config.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -78,10 +78,7 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-
-
     //for security, min signing key is 256
     //allkeysgenerator.com failed
     //https://seanwasere.com/generate-random-hex/
-
 }

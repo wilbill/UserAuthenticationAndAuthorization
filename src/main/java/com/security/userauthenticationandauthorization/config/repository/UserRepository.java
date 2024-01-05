@@ -1,4 +1,4 @@
-package com.security.userauthenticationandauthorization.repository;
+package com.security.userauthenticationandauthorization.config.repository;
 
 
 import com.security.userauthenticationandauthorization.user.User;
