@@ -3,11 +3,16 @@ package com.security.userauthenticationandauthorization.service.impl;
 import com.security.userauthenticationandauthorization.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -39,6 +44,42 @@ public class JwtServiceImpl implements JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
 
     }
+    //below mtd is used to generate token without extraToken
+    public String generateToken(UserDetails userDetails){
+       return generateToken(new HashMap<>(), userDetails);
+    }
+
+    //mtd to generate token, but uses extraClaims
+    public String generateToken(
+        Map<String, Object> extraClaims,
+                UserDetails userDetails) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact(); //generates toekn
+    }
+
+    //mtd to validate a token
+    public boolean isTokenValid(String token, UserDetails userDetails){
+        final String username = extractUserName(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extraExpiration(token).before(new Date());//be4 todays date
+    }
+
+    private Date extraExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+
+
     //for security, min signing key is 256
     //allkeysgenerator.com failed
     //https://seanwasere.com/generate-random-hex/
