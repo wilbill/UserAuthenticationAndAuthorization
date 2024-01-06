@@ -1,6 +1,7 @@
 package com.security.userauthenticationandauthorization.config;
 
 import com.security.userauthenticationandauthorization.config.service.impl.JwtServiceImpl;
+import com.security.userauthenticationandauthorization.token.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
    // @Autowired, why it works?
     private final JwtServiceImpl jwtService;
     private final UserDetailsService userDetailsService; //implemented mine, but spring has its own UserDetailsService
-
+    private final TokenRepository tokenRepository;
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -50,8 +51,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //checking if user is already authenticated
         if(userEmail!=null && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            ///////////////////////////////////////////Added later on for logout functionality////////////////
+            var isTokenValid = tokenRepository.findByToken(jwt)
+                    .map(t->!t.isExpired() && !t.isRevoked())
+                    .orElse(false);
+            /////////////////////////////////////////////////////////////////////////
+
             //validating if token is valid or not--userDetails is from db
-            if(jwtService.isTokenValid(jwt, userDetails)){
+            if(jwtService.isTokenValid(jwt, userDetails) && isTokenValid){ //isTokenValid added for logout
                 //creating obj of username-password-authentication token
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

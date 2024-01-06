@@ -23,7 +23,7 @@ public class UserService {
             throw new IllegalStateException("Wrong Password"); //check exception handling please, dont use this
         }
         if(!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmationPassword())){
-            throw new IllegalStateException("Password dont match"); //check exception handling please, dont use this
+            throw new IllegalStateException("Passwords dont match"); //check exception handling please, dont use this
         }
         //update password and save user
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));

@@ -1,5 +1,6 @@
 package com.security.userauthenticationandauthorization.user;
 
+import com.security.userauthenticationandauthorization.token.Token;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +29,9 @@ public class User implements UserDetails{
     private String firstName;
     private String lastName;
     private String email;
-    private String password; //
+    private String password;
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     //this mtd below should return a list of roles
     @Override

@@ -2,6 +2,9 @@ package com.security.userauthenticationandauthorization.config.auth;
 
 import com.security.userauthenticationandauthorization.repository.UserRepository;
 import com.security.userauthenticationandauthorization.config.service.impl.JwtServiceImpl;
+import com.security.userauthenticationandauthorization.token.Token;
+import com.security.userauthenticationandauthorization.token.TokenRepository;
+import com.security.userauthenticationandauthorization.token.TokenType;
 import com.security.userauthenticationandauthorization.user.Role;
 import com.security.userauthenticationandauthorization.user.User;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
     //injecting the beans which will be used
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtServiceImpl jwtService;
     private final AuthenticationManager authenticationManager;
@@ -29,9 +33,11 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(registerRequest.getPassword())) //this needs to be encoded be4 DB
                 .role(Role.USER)
                 .build();
-        userRepository.save(user);
 
+        var savedUser = userRepository.save(user); //added left part for logout uses, new content
         var jwtToken = jwtService.generateToken(user);
+        saveUserToken(savedUser, jwtToken); //added logout
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -50,8 +56,34 @@ public class AuthenticationService {
         var user  = userRepository.findUsersByEmail(authenticationRequest.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user); //be4 saving token, we need to revoke it==>added for logout purpose
+        saveUserToken(user,jwtToken); //added later
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+    //revokes all valid tokens by user, its part of the logout
+    private void revokeAllUserTokens(User user){
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        if(validUserTokens.isEmpty()){
+            return;
+        }
+        validUserTokens.forEach(t ->{
+            t.setExpired(true);
+            t.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
+    }
+
+    private void saveUserToken(User user, String jwtToken) { //param name
+        var token = Token //added for logout uses
+                .builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .revoked(false) //we set it to false coz wen its generated, its not expired, its not revoked
+                .expired(false)
+                .build();
+        tokenRepository.save(token);
     }
 }

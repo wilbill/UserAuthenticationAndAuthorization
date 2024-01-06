@@ -7,10 +7,12 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 //these were adde later on
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 //class Binding with filter
 @Configuration //makes a class configuration class
@@ -19,6 +21,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter; //this is mine
     private final AuthenticationProvider authenticationProvider; //This is builtin
+    private final LogoutHandler logoutHandler;
 
 
     //Bean responsible for configuring all http security
@@ -35,7 +38,13 @@ public class SecurityConfiguration {
                             .anyRequest().authenticated();
                         })
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);;
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout()
+                .logoutUrl("/api/v1/auth/logout") //this is the url neede to execute the logout handler
+                .addLogoutHandler(logoutHandler)
+                .logoutSuccessHandler(((request, response, authentication) ->
+                        SecurityContextHolder.clearContext()));//wht to do wen one logs out, we also need a url
+
                 return http.build();
 
 //        http
