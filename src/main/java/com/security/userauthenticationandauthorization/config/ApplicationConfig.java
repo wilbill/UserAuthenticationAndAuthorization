@@ -1,6 +1,6 @@
 package com.security.userauthenticationandauthorization.config;
 
-import com.security.userauthenticationandauthorization.config.repository.UserRepository;
+import com.security.userauthenticationandauthorization.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

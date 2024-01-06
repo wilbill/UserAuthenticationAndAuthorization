@@ -54,9 +54,7 @@ public class User implements UserDetails{
     public boolean isAccountNonExpired() {
         //return false;
         return true; //we remove the negation
-
     }
-
     @Override
     public boolean isAccountNonLocked() {
         //return false;

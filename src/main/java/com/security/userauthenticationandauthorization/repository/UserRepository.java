@@ -1,5 +1,4 @@
-package com.security.userauthenticationandauthorization.config.repository;
-
+package com.security.userauthenticationandauthorization.repository;
 
 import com.security.userauthenticationandauthorization.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

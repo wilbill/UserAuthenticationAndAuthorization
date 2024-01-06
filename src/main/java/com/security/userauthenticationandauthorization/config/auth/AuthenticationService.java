@@ -1,6 +1,6 @@
 package com.security.userauthenticationandauthorization.config.auth;
 
-import com.security.userauthenticationandauthorization.config.repository.UserRepository;
+import com.security.userauthenticationandauthorization.repository.UserRepository;
 import com.security.userauthenticationandauthorization.config.service.impl.JwtServiceImpl;
 import com.security.userauthenticationandauthorization.user.Role;
 import com.security.userauthenticationandauthorization.user.User;
