@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @GetMapping
     public ResponseEntity<String> sayHi(){
+
         return ResponseEntity.ok("Hello from secured end point");
     }
 

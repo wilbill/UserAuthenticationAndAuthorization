@@ -25,6 +25,7 @@ public class AuthenticationService {
         var user = User.builder()
                 .firstName(registerRequest.getFirstname())
                 .lastName(registerRequest.getLastname())
+                .email(registerRequest.getEmail()) //added this line later on, wasnt there
                 .password(passwordEncoder.encode(registerRequest.getPassword())) //this needs to be encoded be4 DB
                 .role(Role.USER)
                 .build();
