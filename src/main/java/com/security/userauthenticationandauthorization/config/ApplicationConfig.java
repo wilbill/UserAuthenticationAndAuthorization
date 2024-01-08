@@ -26,6 +26,8 @@ public class ApplicationConfig {
 
         //what is returned is also an interface from spring security
         return (UserDetailsService) username -> userRepository.findUsersByEmail(username)
+                  //shdnt be here
+                        //shdnt be here
                         .orElseThrow(() -> new UsernameNotFoundException("User Not found"));
 
     }

@@ -1,5 +1,6 @@
 package com.security.userauthenticationandauthorization.config.auth;
 
+import com.security.userauthenticationandauthorization.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +16,5 @@ public class RegisterRequest {
     private String lastname;
     private String email;
     private String password;
+    private Role role; //think of a way of handling this role...i dont know if its wise for it to be here,
 }

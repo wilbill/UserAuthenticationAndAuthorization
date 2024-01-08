@@ -31,7 +31,7 @@ public class AuthenticationService {
                 .lastName(registerRequest.getLastname())
                 .email(registerRequest.getEmail()) //added this line later on, wasnt there
                 .password(passwordEncoder.encode(registerRequest.getPassword())) //this needs to be encoded be4 DB
-                .role(Role.USER)
+                .role(registerRequest.getRole()) //.role(Role.USER), I changed it coz of role field put in register
                 .build();
 
         var savedUser = userRepository.save(user); //added left part for logout uses, new content

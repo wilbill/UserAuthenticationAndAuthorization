@@ -38,7 +38,8 @@ public class User implements UserDetails{
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //return null
         //we i need to return a new obje of simpleGrantedAuthority, takes in our role.name()
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        //return List.of(new SimpleGrantedAuthority(role.name()));
+        return role.getAuthorities(); //added when working on permissions
     }
 
     @Override ///this is from the spring security
